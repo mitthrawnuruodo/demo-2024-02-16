@@ -49,6 +49,16 @@ const getBooks = async () => {
         if (!response.ok) throw response.statusText;
         const data = await response.json();
         console.log(data.myBooks);
+        for (let item of data.myBooks) {
+            const book = new Book(
+                item.title, 
+                item.authorFirstName,
+                item.authorLastName,
+                item.published
+            );
+            myBooks.push(book);
+        }
+        Book.printList(myBooks);
     } catch (error) {
         console.error(error);
     }
@@ -56,4 +66,22 @@ const getBooks = async () => {
 
 window.addEventListener("load", () => {
     getBooks();    
+});
+
+// Filter search
+inputField.addEventListener("keyup", () => {
+    const filterQuery = inputField.value.toLowerCase().trim();
+    console.log(filterQuery);
+    const filtered = myBooks.filter((book)=>{
+        console.log(book.title, book.author(), book.published);
+        const title = book.title.toLowerCase();
+        const author = book.author().toLowerCase();
+        const year = book.published.toString();
+
+        if (title.indexOf(filterQuery) > -1) return true;
+        if (author.indexOf(filterQuery) > -1) return true;
+        if (year.indexOf(filterQuery) > -1) return true;
+        return false;
+    });
+    Book.printList(filtered);
 });
